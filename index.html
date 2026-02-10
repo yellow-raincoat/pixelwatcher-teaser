@@ -154,7 +154,8 @@
 
       <!-- Email form -->
       <div class="fade-in fade-in-delay-2 mt-8">
-        <form id="teaser-form" class="max-w-md mx-auto" novalidate>
+        <iframe name="brevo-frame" class="hidden" aria-hidden="true" tabindex="-1"></iframe>
+        <form id="teaser-form" class="max-w-md mx-auto" method="POST" action="https://3a6e989d.sibforms.com/serve/MUIFAJSJbKkHbbLqLrCMmCGfNuYL6MoBUCL9gJIk1Z5vNqnibG4CS0_iHoE-glo5ACALR1xHhl8oqz2QWF3YlsTDQM_UBJKDTTRt9SjndFpW5eC_f4f9aFXP-ZxiBXRgdc0HHMnKEYAR0hRw-4-pmavQqz_fUKe7dLSr8f9BUfSzZdkdOWxzHV5NK5_H7RF9u4Hnl7mQXrXtBs-1LA==" target="brevo-frame" novalidate>
           <div class="flex flex-col sm:flex-row gap-3">
             <div class="flex-1">
               <label for="teaser-email" class="sr-only">Email address</label>
@@ -276,21 +277,17 @@
       });
     }
 
-    function resetButton() {
-      btnText.classList.remove('hidden');
-      btnLoading.classList.add('hidden');
-      submitBtn.disabled = false;
-    }
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    form.addEventListener('submit', (e) => {
       const email = emailInput.value.trim();
 
       if (!email) {
+        e.preventDefault();
         showError('Please enter your email address.');
         return;
       }
       if (!validateEmail(email)) {
+        e.preventDefault();
         showError('Please enter a valid email address.');
         return;
       }
@@ -302,23 +299,9 @@
       btnLoading.classList.remove('hidden');
       submitBtn.disabled = true;
 
-      try {
-        const formData = new FormData(form);
-        const response = await fetch('https://3a6e989d.sibforms.com/serve/MUIFAJSJbKkHbbLqLrCMmCGfNuYL6MoBUCL9gJIk1Z5vNqnibG4CS0_iHoE-glo5ACALR1xHhl8oqz2QWF3YlsTDQM_UBJKDTTRt9SjndFpW5eC_f4f9aFXP-ZxiBXRgdc0HHMnKEYAR0hRw-4-pmavQqz_fUKe7dLSr8f9BUfSzZdkdOWxzHV5NK5_H7RF9u4Hnl7mQXrXtBs-1LA==', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (response.ok) {
-          showSuccess();
-        } else {
-          resetButton();
-          showToast('Something went wrong. Please try again.', 'error');
-        }
-      } catch {
-        resetButton();
-        showToast('Connection error. Please try again.', 'error');
-      }
+      // The form submits natively into the hidden iframe.
+      // Show success after a short delay to allow the POST to go through.
+      setTimeout(() => showSuccess(), 1000);
     });
   </script>
 
