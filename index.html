@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PixelWatcher – Never miss a change</title>
+  <meta name="description" content="Something new is coming. Be the first to know.">
+  <link rel="icon" type="image/png" href="logo-small.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Roboto:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --font-heading: 'Poppins', sans-serif;
+      --font-body: 'Roboto', sans-serif;
+
+      --color-teal-50: #f0f4f3;
+      --color-teal-100: #e2e9e7;
+      --color-teal-200: #c4d4d0;
+      --color-teal-300: #a7beb8;
+      --color-teal-400: #8aa8a1;
+      --color-teal-500: #6c9389;
+      --color-teal-600: #57756e;
+      --color-teal-700: #415852;
+      --color-teal-800: #2b3b37;
+      --color-teal-900: #161d1b;
+      --color-teal-950: #0f1513;
+
+      --color-bronze-50: #fef5e7;
+      --color-bronze-100: #fcebcf;
+      --color-bronze-200: #f9d79f;
+      --color-bronze-300: #f7c26e;
+      --color-bronze-400: #f4ae3e;
+      --color-bronze-500: #f19a0e;
+      --color-bronze-600: #c17b0b;
+      --color-bronze-700: #915c08;
+      --color-bronze-800: #603e06;
+      --color-bronze-900: #301f03;
+      --color-bronze-950: #221602;
+
+      --color-floral-50: #fff4e5;
+      --color-floral-100: #ffe9cc;
+      --color-floral-200: #ffd399;
+      --color-floral-300: #ffbd66;
+
+      --color-blush-50: #ffeae5;
+      --color-blush-100: #ffd5cc;
+
+      --color-coral-50: #fde8e8;
+      --color-coral-100: #fad2d1;
+      --color-coral-200: #f5a4a3;
+      --color-coral-300: #f07775;
+      --color-coral-400: #ec4946;
+      --color-coral-500: #e71c18;
+      --color-coral-600: #b91613;
+      --color-coral-700: #8a110f;
+    }
+
+    @layer base {
+      html { scroll-behavior: smooth; }
+      body {
+        font-family: 'Roboto', sans-serif;
+        color: #2b3b37;
+        background: #fefcf9;
+        overflow-x: hidden;
+      }
+      h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+
+      a:focus-visible, button:focus-visible, input:focus-visible {
+        outline: 2px solid #6c9389;
+        outline-offset: 2px;
+      }
+    }
+
+    @utility grain {
+      position: relative;
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        opacity: 0.025;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        background-size: 128px 128px;
+      }
+    }
+
+    @utility glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      pointer-events: none;
+    }
+
+    @utility btn-lift {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      &:hover { transform: translateY(-1px); }
+      &:active { transform: translateY(0); }
+    }
+
+    @layer components {
+      .fade-in {
+        opacity: 0;
+        transform: translateY(24px);
+        animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      .fade-in-delay-1 { animation-delay: 0.15s; }
+      .fade-in-delay-2 { animation-delay: 0.3s; }
+      .fade-in-delay-3 { animation-delay: 0.5s; }
+
+      .toast-enter { animation: toast-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    }
+
+    @keyframes fade-up {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes toast-in {
+      from { transform: translateY(16px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <main class="relative min-h-dvh flex items-center justify-center grain overflow-hidden">
+    <!-- Decorative orbs -->
+    <div class="glow-orb w-[500px] h-[500px] bg-bronze-200 opacity-40 -top-48 right-[-10%]"></div>
+    <div class="glow-orb w-[350px] h-[350px] bg-teal-200 opacity-30 bottom-[-10%] -left-24"></div>
+    <div class="glow-orb w-[250px] h-[250px] bg-coral-200 opacity-20 top-[40%] right-[8%]"></div>
+
+    <div class="relative w-full max-w-2xl mx-auto px-6 pt-8 md:pt-12 pb-20 text-center">
+
+      <!-- Logo -->
+      <div class="fade-in">
+        <img
+          src="logo-tagline.png"
+          alt="PixelWatcher – Never miss a change."
+          class="w-full max-w-xl mx-auto"
+        >
+      </div>
+
+      <!-- Promise -->
+      <div class="fade-in fade-in-delay-1 mt-6">
+        <h1 class="text-2xl md:text-3xl font-bold text-teal-900 leading-snug tracking-tight">
+          Important changes happen on the web every day.
+          <span class="text-teal-500">Knowing about them shouldn't cost a fortune.</span>
+        </h1>
+        <p class="mt-5 text-lg text-teal-600 leading-relaxed max-w-md mx-auto">
+          We're building a smarter and cheaper way to track what matters. Sign up to get early access.
+        </p>
+      </div>
+
+      <!-- Email form -->
+      <div class="fade-in fade-in-delay-2 mt-8">
+        <form id="teaser-form" class="max-w-md mx-auto" novalidate>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <div class="flex-1">
+              <label for="teaser-email" class="sr-only">Email address</label>
+              <input
+                id="teaser-email"
+                type="email"
+                required
+                placeholder="you@example.com"
+                class="w-full bg-white border border-teal-200/80 rounded-xl px-4 py-3.5 text-base text-teal-900 placeholder-teal-300 focus:outline-hidden focus:ring-2 focus:ring-bronze-400/50 focus:border-bronze-300 transition-shadow shadow-sm"
+                aria-describedby="teaser-email-error"
+              >
+            </div>
+            <button
+              type="submit"
+              id="teaser-submit"
+              class="btn-lift font-semibold text-bronze-950 bg-bronze-400 hover:bg-bronze-300 disabled:opacity-60 disabled:pointer-events-none px-7 py-3.5 rounded-xl text-base shadow-md shadow-bronze-400/20 transition-colors shrink-0"
+            >
+              <span id="btn-text">Notify me</span>
+              <span id="btn-loading" class="hidden">
+                <svg class="animate-spin h-5 w-5 inline" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+              </span>
+            </button>
+          </div>
+          <p id="teaser-email-error" class="hidden mt-2 text-sm text-coral-500" role="alert"></p>
+        </form>
+        <p id="teaser-reassurance" class="mt-3 text-sm text-teal-400">No spam. Just updates on progress and launch.</p>
+      </div>
+
+      <!-- Success state (hidden by default) -->
+      <div id="success-state" class="hidden mt-10">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/60 mb-5">
+          <svg class="w-7 h-7 text-teal-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <p class="text-lg font-semibold text-teal-900">You're on the list.</p>
+        <p class="mt-2 text-base text-teal-600">We'll let you know as soon as we're ready.</p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="absolute bottom-0 inset-x-0 py-6 text-center">
+    <p class="text-[13px] text-teal-400">Made with <span aria-label="love">&#128167;</span> by <a href="https://yellowraincoat.co.uk" target="_blank" rel="noopener" class="text-teal-600 hover:text-teal-800 transition-colors">Yellow Raincoat Ltd</a>. &copy; 2026. All rights reserved.</p>
+  </footer>
+
+  <!-- Toast container -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-[110] pointer-events-none" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <script>
+    // Toast
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const bgClass = type === 'success'
+        ? 'bg-teal-800 text-teal-50'
+        : 'bg-coral-600 text-white';
+
+      toast.className = `toast-enter pointer-events-auto ${bgClass} px-5 py-3 rounded-xl text-sm font-medium shadow-lg shadow-teal-900/15 flex items-center gap-2 mb-2`;
+      toast.innerHTML = type === 'success'
+        ? `<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>${message}`
+        : `<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01"/></svg>${message}`;
+
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(8px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    // Email validation
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    // Form
+    const form = document.getElementById('teaser-form');
+    const emailInput = document.getElementById('teaser-email');
+    const emailError = document.getElementById('teaser-email-error');
+    const btnText = document.getElementById('btn-text');
+    const btnLoading = document.getElementById('btn-loading');
+    const submitBtn = document.getElementById('teaser-submit');
+    const successState = document.getElementById('success-state');
+
+    function showError(message) {
+      emailInput.classList.add('border-coral-400', 'focus:ring-coral-400/50');
+      emailInput.classList.remove('border-teal-200/80', 'focus:ring-bronze-400/50');
+      emailError.textContent = message;
+      emailError.classList.remove('hidden');
+    }
+
+    function clearError() {
+      emailInput.classList.remove('border-coral-400', 'focus:ring-coral-400/50');
+      emailInput.classList.add('border-teal-200/80', 'focus:ring-bronze-400/50');
+      emailError.textContent = '';
+      emailError.classList.add('hidden');
+    }
+
+    emailInput.addEventListener('input', clearError);
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+
+      if (!email) {
+        showError('Please enter your email address.');
+        return;
+      }
+      if (!validateEmail(email)) {
+        showError('Please enter a valid email address.');
+        return;
+      }
+
+      clearError();
+
+      // Show loading
+      btnText.classList.add('hidden');
+      btnLoading.classList.remove('hidden');
+      submitBtn.disabled = true;
+
+      // Simulate API call
+      setTimeout(() => {
+        // Hide form and reassurance, show success
+        form.classList.add('hidden');
+        document.getElementById('teaser-reassurance').classList.add('hidden');
+        successState.classList.remove('hidden');
+        successState.style.opacity = '0';
+        successState.style.transform = 'translateY(12px)';
+        requestAnimationFrame(() => {
+          successState.style.transition = 'opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+          successState.style.opacity = '1';
+          successState.style.transform = 'translateY(0)';
+        });
+      }, 1000);
+    });
+  </script>
+
+</body>
+</html>
