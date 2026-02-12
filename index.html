@@ -264,6 +264,7 @@
       }
 
       clearError();
+      if (typeof fathom !== 'undefined') fathom.trackEvent('teaser_form_submitted');
 
       // Show loading
       btnText.classList.add('hidden');
@@ -274,6 +275,33 @@
       // Show success after a short delay to allow the POST to go through.
       setTimeout(() => showSuccess(), 1000);
     });
+
+    // Track form viewed (fires once when >=50% visible)
+    (function () {
+      const formEl = document.getElementById('teaser-form');
+      if (!formEl) return;
+      const observer = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+          if (typeof fathom !== 'undefined') fathom.trackEvent('teaser_form_viewed');
+          observer.disconnect();
+        }
+      }, { threshold: 0.5 });
+      observer.observe(formEl);
+    })();
+
+    // Track time to first interaction (_value in cents)
+    (function () {
+      let interacted = false;
+      const start = Date.now();
+      ['click', 'scroll', 'keydown'].forEach(evt => {
+        window.addEventListener(evt, () => {
+          if (interacted) return;
+          interacted = true;
+          const seconds = Math.round((Date.now() - start) / 1000);
+          if (typeof fathom !== 'undefined') fathom.trackEvent('teaser_first_interaction', { _value: seconds * 100 });
+        }, { once: true });
+      });
+    })();
   </script>
 
 </body>
